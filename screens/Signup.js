@@ -58,12 +58,20 @@ const SignupScreen = () => {
           <Picker.Item label="Other" value="other" />
         </Picker>
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Country"
-        value={country}
-        onChangeText={setCountry}
-      />
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={country}
+          onValueChange={(itemValue) => setCountry(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Select Country" value="" />
+          <Picker.Item label="Kenya" value="kenya" />
+          <Picker.Item label="Uganda" value="uganda" />
+          <Picker.Item label="Tanzania" value="tanzania" />
+          <Picker.Item label="Rwanda" value="rwanda" />
+          <Picker.Item label="Burundi" value="burundi" />
+        </Picker>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Username"

@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MessageScreen from './screens/Messages';
 import ChatScreen from './screens/Chat';
+import SignupScreen from './screens/Signup';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,10 @@ const HomeScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() =>navigation.navigate('Signup')}>
+        <Text style={styles.buttonText}>Signup</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -52,6 +57,7 @@ const App = () => {
         <Stack.Screen name="Online" component={OnlineScreen} />
         <Stack.Screen name="Messages" component={MessageScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

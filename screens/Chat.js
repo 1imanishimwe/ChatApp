@@ -5,7 +5,10 @@
   const ChatScreen = ({ navigation }) => {
       return(
           <View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>ChatNow</Text>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
           <View style={styles.Online}>
             <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
               <Icon name="user-circle" size={70} color="black" />
@@ -46,6 +49,16 @@
           </View>
         </ScrollView>
 
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity style={styles.searchButton}>
+            <Icon name="search" size={20} color="black" />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('Online')}>
           <Text>Goo</Text>
@@ -105,25 +118,41 @@
       },
       header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 10,
         paddingTop: 40,
         paddingBottom: 10,
+        marginBottom: 10,
+      },
+      headerTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
       },
       headerIcons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: 120,
       },
-      searchInput: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        paddingHorizontal: 10,
+      searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginHorizontal: 10,
         marginBottom: 10,
+      },
+      searchInput: {
+        flex: 1,
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 2,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+      },
+      searchButton: {
+        marginLeft: 10,
+        padding: 16,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 25,
       },
       scrollView: {
         flexGrow: 0,

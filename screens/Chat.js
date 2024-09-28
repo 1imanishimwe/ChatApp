@@ -1,51 +1,66 @@
   import { StatusBar } from 'expo-status-bar';
+  import {React, useEffect, useState} from 'react';
   import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
   import Icon from 'react-native-vector-icons/FontAwesome';
+  import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
   const ChatScreen = ({ navigation }) => {
+        const [username, setUsername] = useState('N/A')
+        const [users, setUsers] = useState({})
+        const url = 'http://127.0.0.1:8000/api';
+        useEffect(() => {
+          getSavedData()
+          const interval = setInterval(() => {
+            getUsers();
+          }, 1000);
+          return () => clearInterval(interval);
+        }, [])
+
+        // get saved user data in async storage
+      const getSavedData = async () => {
+         const user_name = await AsyncStorage.getItem('userName')
+         setUsername(user_name)
+       
+      }
+
+      // get all users
+      const getUsers = async () => {
+        // console.log("tested")
+        const user_id = AsyncStorage.getItem('userId')
+     fetch(`http://192.168.88.250:8000/api/get-users/${user_id}`)
+     .then(response => response.json())
+     .then(data => {
+       setUsers(data)
+      //  console.log(users[0].username)
+        // console.log(data[0].email)
+     })
+     .catch(error => {
+      console.error('Error:', error);
+     })
+           
+        
+      }
       return(
           <View>
             <View style={styles.header}>
               <Text style={styles.headerTitle}>ChatNow</Text>
+              {/* display username */}
+              <Text style={styles.user_name}>{username}</Text>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
           <View style={styles.Online}>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User3</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-            <Icon name="user-circle" size={70} color="black" />
-            <Text style={styles.username}>User4</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-            <Icon name="user-circle" size={70} color="black" />
-            <Text style={styles.username}>User5</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User6</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User7</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-              <Icon name="user-circle" size={70} color="black" />
-              <Text style={styles.username}>User8</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Messages')}>
-            <Icon name="user-circle" size={70} color="black" />
-            <Text style={styles.username}>User9</Text>
-            </TouchableOpacity>
+            {/* display user from seted users */}
+            {users && Array.isArray(users) && users.map((user, _index) => (
+              <TouchableOpacity key={_index} style={styles.iconContainer} onPress={() => navigation.navigate('Messages', { username: user.username })}>
+                <Icon name="user-circle" size={70} color="black" />
+                <Text style={styles.username}>{user.username}</Text>
+              </TouchableOpacity>
+            ))}
+
+            
+           
+          
           </View>
         </ScrollView>
 
@@ -61,7 +76,7 @@
         </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('Online')}>
-          <Text>Goo</Text>
+          {/* <Text>Goo</Text> */}
         </TouchableOpacity>
       
         <View>
@@ -153,6 +168,13 @@
         padding: 16,
         backgroundColor: '#e0e0e0',
         borderRadius: 25,
+      },
+      user_name: {
+        marginLeft: 10,
+        padding: 16,
+        fontSize: 22
+        // backgroundColor: '#e0e0e0',
+        // borderRadius: 25,
       },
       scrollView: {
         flexGrow: 0,

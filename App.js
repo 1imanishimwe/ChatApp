@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
 import OnlineScreen from './screens/Online';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,18 +7,87 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MessageScreen from './screens/Messages';
 import ChatScreen from './screens/Chat';
 import SignupScreen from './screens/Signup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmaiil] = useState('');
   const [password, setPassword] = useState('');
+  useEffect(() => {
+    checkUserSession();
+  }, []);
+  const checkUserSession = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const userName = await AsyncStorage.getItem('userName');
+      
+      if (userId && userName) {
+        // User is already logged in, redirect to Chat screen
+        navigation.replace('Chat');
+      }
+    } catch (error) {
+      console.error('Error checking user session:', error);
+    }
+  };
 
   const handleLogin = () => {
-    // Add your login logic here
-    // For now, we'll just navigate to the Messages screen
-    navigation.navigate('Chat');
+    
+    if (!email || email.trim() === "")
+       {
+      Alert.alert('Please enter a email.');
+      return;
+    } 
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Alert.alert('Please enter a valid email address.');
+      return;
+    }
+    if (!password || password.trim() === "") {
+      Alert.alert('Please enter a password.');
+      return;
+  }
+
+    fetch("http://127.0.0.1:8000/api/login", 
+      {
+           
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      }
+    )
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      // console.log(data.errors.email)
+      const message = data.message
+      console.log(data.user_name)
+      if (message === "Login successful") {
+        // Store the user data or token in AsyncStorage or a state management solution
+        // For example, using AsyncStorage:
+        AsyncStorage.setItem('userId', data.user_id);
+        AsyncStorage.setItem('userEmail', email);
+        AsyncStorage.setItem('userName', data.user_name);
+        // console.log("login success")
+        // Navigate to the Online screen
+        navigation.navigate('Chat');
+      } else {
+        // Handle login failure
+        Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An error occurred while logging in. Please try again.');
+    });
   };
+  
 
   return (
     <View style={styles.container}>
@@ -27,8 +96,8 @@ const HomeScreen = ({ navigation }) => {
         style={styles.input}
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        onChangeText={setEmaiil}
+        keyboardType="user-email"
         autoCapitalize="none"
       />
       <TextInput

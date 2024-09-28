@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useRoute } from "@react-navigation/native";
 
 const MessageScreen = ({Navigate}) => {
     const [newMessage, setNewMessage] = useState('');
+    const route = useRoute();
+    // get user name from route
+    const username = route.params?.username;
+ 
 
     const handleSendMessage = () => {
         // Logic to send the message
@@ -24,7 +28,7 @@ const MessageScreen = ({Navigate}) => {
                     </View>
                     <View style={styles.messageInfo}>
                         <View style={styles.messageInfoRow}>
-                            <Text style={styles.username}>User Name</Text>
+                            <Text style={styles.username}>{username}</Text>
                             <Text style={styles.time}>2:45 PM</Text>
                         </View>
                         <View style={styles.receiverMessage}>

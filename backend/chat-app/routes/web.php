@@ -9,10 +9,10 @@ Route::get('/', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/api/get-users/{userId}', function ($user_id) {
+Route::get('/api/get-users/{userName}', function ($userName) {
 
    try {
-    $users = User::where('id', '!=', $user_id)->get();
+    $users = User::where('username', '!=', $userName)->get();
     return response()->json($users);
 
    } catch (\Throwable $th) {

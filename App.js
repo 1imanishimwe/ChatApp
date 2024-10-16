@@ -48,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
       return;
   }
 
-    fetch("http://127.0.0.1:8000/api/login", 
+    fetch("http://192.168.88.88:8000/api/login", 
       {
            
         method: "POST",
@@ -74,12 +74,12 @@ const HomeScreen = ({ navigation }) => {
         AsyncStorage.setItem('userId', data.user_id);
         AsyncStorage.setItem('userEmail', email);
         AsyncStorage.setItem('userName', data.user_name);
-        // console.log("login success")
+        // console.log(data.user_id)
         // Navigate to the Online screen
         navigation.navigate('Chat');
       } else {
         // Handle login failure
-        Alert.alert('Login Failed', 'Please check your credentials and try again.');
+        Alert.alert('Login Failed', message);
       }
     })
     .catch(error => {

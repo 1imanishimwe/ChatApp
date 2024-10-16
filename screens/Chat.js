@@ -7,38 +7,46 @@
 
   const ChatScreen = ({ navigation }) => {
         const [username, setUsername] = useState('N/A')
+        const [useID, setUserId] = useState(0)
         const [users, setUsers] = useState({})
-        const url = 'http://127.0.0.1:8000/api';
+        const url = 'http://192.168.88.88:8000/api';
         useEffect(() => {
           getSavedData()
           const interval = setInterval(() => {
             getUsers();
-          }, 1000);
+          }, 500); 
           return () => clearInterval(interval);
         }, [])
 
-        // get saved user data in async storage
+        // get saved user data in async storage  
       const getSavedData = async () => {
          const user_name = await AsyncStorage.getItem('userName')
+         const user_id = AsyncStorage.getItem('userId')
+         console.log(`user id ${user_id}`)
          setUsername(user_name)
+         setUserId(user_id)
        
       }
 
       // get all users
       const getUsers = async () => {
         // console.log("tested")
-        const user_id = AsyncStorage.getItem('userId')
-     fetch(`http://192.168.88.250:8000/api/get-users/${user_id}`)
+      
+     try {
+      fetch(`http://192.168.88.88:8000/api/get-users/${username}`)
      .then(response => response.json())
      .then(data => {
        setUsers(data)
-      //  console.log(users[0].username)
+      //  console.log(data)
         // console.log(data[0].email)
      })
      .catch(error => {
       console.error('Error:', error);
      })
-           
+     } catch (error) {
+      console/log(error)
+     }
+             
         
       }
       return(
